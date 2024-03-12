@@ -5,5 +5,5 @@ Step 4: Create an enviroment variable so that scripts can retrieve connection in
 sudo nano ~/.bashrc
 export EAPI_CONF=/path/to/eapi.conf
 source ~/.bashrc
-Step 5: Create a node object and specify the hostname(s) of device(s) you want to manage
+Step 5: Create a node object and specify the hostname(s) of device(s) you want to manage.
 node = pyeapi.connect_to('hostname)
