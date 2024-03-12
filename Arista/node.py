@@ -11,3 +11,6 @@ print(output)
 # return the running or startup configuration from the
 # node (output omitted for brevity)
 #node.running_config
+
+vlans = node.api('vlans')
+print(vlans.getall())
