@@ -1,26 +1,20 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/python3
 """
 Arista EOS network automation with pyeapi.
 """
 
 import pyeapi
+from pprint import pprint
 
-SPINE1 = pyeapi.connect_to('Spine-1')
-SPINE2 = pyeapi.connect_to('Spine-2')
-LEAF1 = pyeapi.connect_to('Leaf-1')
-LEAF2 = pyeapi.connect_to('Leaf-2')
-LEAF3 = pyeapi.connect_to('Leaf-3')
-LEAF4 = pyeapi.connect_to('Leaf-4')
+NODE = pyeapi.connect_to('Spine-1')
 
-print(SPINE1.api)
+output = NODE.enable('show version')
+pprint(output)
 
-NODES = [SPINE1, SPINE2, LEAF1, LEAF2, LEAF3, LEAF4]
 
-for NODE in NODES:
-    try:
-        output = NODE.enable('show version')
-        print('SN -> ', output[0]['result']['serialNumber'])
-    except (TimeoutError, pyeapi.eapilib.ConnectionError):
-        print('Device unavailable')
+#NODE = pyeapi.connect(host='192.168.1.5',username='arista',password='arista')
 
+#output = NODE.enable('show running-config')
+#output = NODE.run_commands('show running-config')
+#output = NODE.startup_config
+#output = NODE.execute(['enable','show running-config'])

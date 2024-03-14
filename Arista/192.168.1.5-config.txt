@@ -1,0 +1,102 @@
+! Command: show running-config
+! device: Spine-1 (vEOS-lab, EOS-4.31.1F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+!
+username arista secret sha512 $6$3CsosVOHELpHVxv3$plfA/zvZqnradmYMWk2xSSCFsDnCnHbNTSg6.jZp9fhyYyxIxRdilImX2sQTrnONh5fGTRYvkMLt4DgYpPGdi.
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname Spine-1
+ip name-server vrf default 8.8.8.8
+dns domain DC-LAB
+!
+spanning-tree mode mstp
+!
+system l1
+   unsupported speed action error
+   unsupported error-correction action error
+!
+management api http-commands
+   no shutdown
+!
+management http-server
+   protocol http
+!
+interface Ethernet1
+   description - P2P Link to Leaf-1
+   logging event link-status
+   speed forced 100gfull
+   no switchport
+   ip address 10.10.0.1/30
+   arp aging timeout 900
+!
+interface Ethernet2
+   description - P2P Link to Leaf-2
+   logging event link-status
+   speed forced 100gfull
+   no switchport
+   ip address 10.10.0.5/30
+   arp aging timeout 900
+!
+interface Ethernet3
+   description - P2P Link to Leaf-3
+   logging event link-status
+   speed forced 100gfull
+   no switchport
+   ip address 10.10.0.9/30
+   arp aging timeout 900
+!
+interface Ethernet4
+   description - P2P Link to Leaf-4
+   logging event link-status
+   speed forced 100gfull
+   no switchport
+   ip address 10.10.0.13/30
+   arp aging timeout 900
+!
+interface Ethernet5
+   shutdown
+!
+interface Ethernet6
+   shutdown
+!
+interface Ethernet7
+   description - Link to Internet
+   no switchport
+   ip address dhcp
+   ip nat source dynamic access-list INTERNET_ACCESS overload
+!
+interface Loopback0
+   description Router-ID
+   ip address 192.168.0.1/32
+!
+interface Management1
+   ip address 172.19.0.10/24
+!
+ip access-list standard INTERNET_ACCESS
+   10 permit any log
+!
+ip routing
+!
+ip route 0.0.0.0/0 192.168.1.1
+!
+router bgp 65010
+   router-id 192.168.0.1
+   distance bgp 20 200 200
+   maximum-paths 4 ecmp 64
+   neighbor EBGP-TO-LEAF-PEER peer group
+   neighbor EBGP-TO-LEAF-PEER remote-as 65020
+   neighbor EBGP-TO-LEAF-PEER maximum-routes 12000
+   neighbor 10.10.0.2 peer group EBGP-TO-LEAF-PEER
+   neighbor 10.10.0.6 peer group EBGP-TO-LEAF-PEER
+   neighbor 10.10.0.10 peer group EBGP-TO-LEAF-PEER
+   neighbor 10.10.0.14 peer group EBGP-TO-LEAF-PEER
+   network 192.168.0.1/32
+   redistribute static
+!
+end
